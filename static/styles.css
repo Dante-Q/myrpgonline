@@ -1,0 +1,130 @@
+/* Reset defaults */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background styling */
+body {
+    background: radial-gradient(circle at top, #2e2b3f, #1a1824);
+    color: #f1f1f1;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Center container */
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+}
+
+/* Header */
+h1 {
+    font-size: 2.4em;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.highlight {
+    color: #e0b74a;
+}
+
+/* Subtitle */
+.subtitle {
+    color: #c4c4c4;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+/* Buttons */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #4e4376, #2b5876);
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(145deg, #5b4a89, #345d86);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+.btn.secondary {
+    background: linear-gradient(145deg, #6a9113, #141517);
+}
+
+.btn.secondary:hover {
+    background: linear-gradient(145deg, #7ea51b, #1b1b1d);
+}
+/* Form container styling */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.95em;
+    margin-bottom: 6px;
+    color: #e0b74a;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8f8f8;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+}
+
+.input-field:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 8px rgba(224, 183, 74, 0.6);
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.small-text {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.link {
+    color: #e0b74a;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

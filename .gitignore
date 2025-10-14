@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+my_flask_env/
+
+# Flask instance folder (contains runtime data like database)
+instance/
+
+# SQLite database file (optional: you may want to push an empty template)
+database.db
+
+# Flask/Werkzeug logs
+*.log
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python egg files
+*.egg
+*.egg-info/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
