@@ -7,11 +7,10 @@ __pycache__/
 # Virtual environment
 my_flask_env/
 
-# Flask instance folder (contains runtime data like database)
+# Flask instance folder 
 instance/
 
-# SQLite database file (optional: you may want to push an empty template)
-database.db
+# SQLite database file 
 
 # Flask/Werkzeug logs
 *.log
