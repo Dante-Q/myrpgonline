@@ -5,6 +5,7 @@ This is the new iteration of the MyRPG game, built with Flask.
 ## Features
 
 * Player registration and login working.
+* Character creation working.
 * Working on updating and integrating the game into this project.
 
 ## Setup Instructions
