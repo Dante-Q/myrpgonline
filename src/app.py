@@ -1,29 +1,34 @@
 from flask import Flask, render_template, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
+from wtforms.validators import InputRequired, Length, ValidationError, NumberRange
 from flask_bcrypt import Bcrypt
+
+# Import database and models
+from database import db, User, Character, init_db
+
+# -------------------- Flask App Setup --------------------
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'your_secret_key' # Important for session security
-db = SQLAlchemy(app)
-Bcrypt = Bcrypt(app)
+app.config['SECRET_KEY'] = 'your_secret_key'
+
+# Initialize DB and Bcrypt
+init_db(app)
+bcrypt = Bcrypt(app)
+
+# -------------------- Flask-Login Setup --------------------
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-@login_manager.user_loader
 
+@login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
+# -------------------- Forms --------------------
 
 class RegistrationForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -31,7 +36,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register")
 
     def validate_username(self, username):
-        existing_user = User.query.filter_by(username=username.data).first()
+        existing_user = User.query.filter_by(username=username.data.title()).first()
         if existing_user:
             raise ValidationError("That username already exists. Please choose a different one.")
 
@@ -39,6 +44,16 @@ class LoginForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Password"})
     submit = SubmitField("Login")
+
+class CharacterForm(FlaskForm):
+    name = StringField(validators=[InputRequired(), Length(max=20)], render_kw={"placeholder": "Character Name"})
+    strength = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
+    intelligence = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
+    charisma = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
+    dev_mode = BooleanField(default=False)
+    submit = SubmitField("Create Character")
+
+# -------------------- Routes --------------------
 
 @app.route('/')
 def index():
@@ -49,7 +64,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data.title()).first()
-        if user and Bcrypt.check_password_hash(user.password, form.password.data):
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('dashboard'))
     return render_template('login.html', form=form)
@@ -64,20 +79,45 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = Bcrypt.generate_password_hash(form.password.data)
+        hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data.title(), password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
-    return render_template('register.html', form =form)
+    return render_template('register.html', form=form)
+
+@app.route('/create_character', methods=['GET', 'POST'])
+@login_required
+def create_character():
+    form = CharacterForm()
+    if form.validate_on_submit():
+        total_skill = form.strength.data + form.intelligence.data + form.charisma.data
+        luck = 10 if form.dev_mode.data else __import__('random').randint(1, 10)
+
+        new_character = Character(
+            user_id=current_user.id,
+            name=form.name.data.title(),
+            strength=form.strength.data,
+            intelligence=form.intelligence.data,
+            charisma=form.charisma.data,
+            luck=luck,
+            total_skill=total_skill,
+            dev_mode=form.dev_mode.data
+        )
+        db.session.add(new_character)
+        db.session.commit()
+        return redirect(url_for('dashboard'))
+
+    return render_template('create_character.html', form=form)
+
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', name=current_user.username)
+    characters = current_user.characters  # list of characters for this user
+    return render_template('dashboard.html', name=current_user.username, characters=characters)
+
+# -------------------- Main Entry Point --------------------
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        print("Database tables created.")
     app.run(debug=True, host='0.0.0.0')
