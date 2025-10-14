@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My RPG | View Character</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>View Character</h1>
+
+    <header class="header-bar">
+        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+    </header>
+
+    <div class="container">
+        <h1>{{character.name}}</h1>
+        <p class="subtitle">Now looking at <strong>{{character.name}}</strong>!</p>
+        <div class="characters-section">
+
+            <h2>Character Details:</h2>
+            <div class="characters-section">
+                <ul class="character-list">
+                    <li>
+                        Name: {{ character.name }}
+                    </li>
+                    <li>
+                        Strength: {{ character.strength }}
+                    </li>
+                    <li>
+                        Intelligence: {{ character.intelligence }}
+                    </li>
+                    <li>
+                        Charisma: {{ character.charisma }}
+                    </li>
+                    <li>
+                        Gold: {{ character.gold }}
+                    </li>
+                    <li>
+                        Level: {{ character.level }}
+                    </li>
+                    <li>
+                        Experience: {{ character.experience }}
+                    </li>
+                    <li>
+                        Created At: {{ character.created_at }}
+                    </li>
+                    <li>
+                        Last Updated: {{ character.updated_at }}
+                    </li>
+                </ul>
+            </div>
+            <a href="" class="btn danger">Play</a> <!-- add functionality for play game in routeing-->
+            <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back to Dashboard</a>
+
+        
+    </div>
 </body>
 </html>
