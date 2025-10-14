@@ -1,12 +1,11 @@
 # MyRPG Online
 
-This is the backend server for the MyRPG game, built with Flask. It handles login, player stats, inventory, and core game logic.
+This is the new iteration of the MyRPG game, built with Flask. 
 
 ## Features
 
-* Player registration and login
-* Inventory and stats management
-* Combat and skill system via API routes
+* Player registration and login working.
+* Working on updating and integrating the game into this project.
 
 ## Setup Instructions
 
@@ -62,7 +61,7 @@ This installs all packages from `requirements.txt` into the virtual environment,
 ### 7. Launch the project
 
 ```bash
-python backend/app.py
+python src/app.py
 ```
 
 Then open your browser, create an account on localhost, and log in.
