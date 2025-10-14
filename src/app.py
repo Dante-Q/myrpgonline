@@ -110,6 +110,13 @@ def create_character():
 
     return render_template('create_character.html', form=form)
 
+@app.route('/view_character/<int:char_id>')
+@login_required
+def view_character(char_id):
+    character = Character.query.get_or_404(char_id)
+    if character.user_id != current_user.id:
+        return "Unauthorized", 403
+    return render_template('view_character.html', character=character)
 
 @app.route('/dashboard')
 @login_required
