@@ -121,6 +121,7 @@ ul li:hover {
     background: linear-gradient(145deg, #4e4376, #2b5876);
     color: white;
     font-weight: 600;
+    font-size: 1em;
     letter-spacing: 0.5px;
     transition: all 0.25s ease;
     display: inline-flex;
@@ -139,4 +140,22 @@ ul li:hover {
 
 .btn.third:hover {
     background: linear-gradient(145deg, #a156c8, #71459b);
+}
+
+/* Green "Play" button */
+.btn.play {
+    background: linear-gradient(145deg, #28a745, #1e7e34); /* green gradient */
+}
+
+.btn.play:hover {
+    background: linear-gradient(145deg, #34c759, #218838); /* lighter green on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+.button-row {
+    display: flex;
+    justify-content: center; /* centers the group horizontally */
+    gap: 20px; /* space between the buttons */
+    margin-top: 20px; /* optional spacing from elements above */
 }

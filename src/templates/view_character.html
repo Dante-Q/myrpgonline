@@ -14,15 +14,11 @@
 
     <div class="container">
         <h1>{{character.name}}</h1>
-        <p class="subtitle">Now looking at <strong>{{character.name}}</strong>!</p>
         <div class="characters-section">
 
             <h2>Character Details:</h2>
             <div class="characters-section">
                 <ul class="character-list">
-                    <li>
-                        Name: {{ character.name }}
-                    </li>
                     <li>
                         Strength: {{ character.strength }}
                     </li>
@@ -36,22 +32,20 @@
                         Gold: {{ character.gold }}
                     </li>
                     <li>
-                        Level: {{ character.level }}
+                        Level: {{ character.level }}<!-- level doesn't exist in db-->
                     </li>
                     <li>
-                        Experience: {{ character.experience }}
-                    </li>
-                    <li>
-                        Created At: {{ character.created_at }}
+                        Experience: {{ character.experience }}<!-- xp doesn't exist in db-->
                     </li>
                     <li>
                         Last Updated: {{ character.updated_at }}
                     </li>
                 </ul>
             </div>
-            <a href="" class="btn danger">Play</a> <!-- add functionality for play game in routeing-->
-            <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back to Dashboard</a>
-
+            <div class="button-row">
+                <a href="" class="btn play create-character-btn">Play</a> <!-- add functionality for play game in routeing-->
+                <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back</a> <!-- merge create char button with brn class in css-->
+            </div>
         
     </div>
 </body>
