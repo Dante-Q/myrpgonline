@@ -14,8 +14,8 @@ body {
     display: flex;
     justify-content: center;
     height: 100vh;
-    align-items: center;
-    padding-top: 75px; /* space for fixed header */
+    align-items: flex-start;
+    padding-top: 80px; /* space for fixed header */
 }
 
 /* Header Bar */
@@ -212,7 +212,6 @@ p {
 .form-group label {
     display: block;
     font-size: 0.95em;
-    margin-bottom: 6px;
     color: #e0b74a;
 }
 

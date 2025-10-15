@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>🧙‍♂️ Register</h1>
-        <p class="subtitle">Create your hero and begin your adventure.</p>
+        <p class="subtitle">Create your profile and begin your adventure.</p>
 
         <form action="{{ url_for('register') }}" method="post" class="form">
             {{ form.hidden_tag() }}
@@ -25,7 +25,7 @@
             </div>
 
             <div class="form-actions">
-                {{ form.submit(class="btn secondary") }}
+                {{ form.submit(class="btn play") }}
             </div>
         </form>
 
