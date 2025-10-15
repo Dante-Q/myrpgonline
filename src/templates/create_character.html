@@ -13,14 +13,15 @@
     </header>
 
     <div class="container">
-        <h1>Create Character</h1>
-        <p class="subtitle">Input Your Starting Values <strong>{{ current_user.username }}</strong>!</p>
+        <h1>💪 Begin Your Tale</h1>
+        <p class="subtitle">A new story awaits!</p>
+        <p>Pick a name, shape your traits, and set off on an unforgettable journey!</p>
 
         <div class="characters-section">
 
             <h2>Your Characters:</h2>
             <div class="characters-section">
-                <form method="POST" class="character-list">
+                <form method="POST" class="unique-list">
                     {{ form.hidden_tag() }}
                     <ul>
                         <li>
@@ -39,14 +40,14 @@
                             {{ form.charisma.label }}<br>
                             {{ form.charisma(class="input-field") }}
                         </li>
-                        <li class="form-actions">
-                            {{ form.submit(class="btn third") }}
-                        </li>
                     </ul>
+                        <div class="button-row">
+                            {{ form.submit(class="btn play create-character-btn") }}
+                            <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back</a>   
+                        </div>
                 </form>
             </div>
 
-            <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back to Dashboard</a>
         </div>
     </div>
 </body>

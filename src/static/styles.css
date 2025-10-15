@@ -43,7 +43,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    /* gap: 20px; */
     background: rgba(255, 255, 255, 0.05);
     padding: 40px 60px;
     border-radius: 20px;
@@ -60,6 +60,12 @@ h1 {
     font-size: 2.4em;    
     margin-bottom: 10px;
     color: #fff;
+}
+
+p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    color: #ccc;
 }
 
 .highlight {
@@ -102,25 +108,25 @@ h1 {
 .character-list li {
     cursor: pointer;
     transition: background 0.2s;
-}
-
-.character-list li:hover {
-    background: rgba(142, 68, 173, 0.5);
-}
-
-ul li {
     margin-bottom: 12px;
     padding: 8px 12px;
     background: rgba(255,255,255,0.08);
     border-radius: 10px;
-    transition: all 0.25s ease; /* smooth hover transition */
+    transition: all 0.25s ease;
 }
 
-/* Hover effect */
-ul li:hover {
-    background: rgba(224, 183, 74, 0.15); /* slightly highlighted */
+.character-list li:hover {
+    background: rgba(142, 68, 173, 0.5);
     transform: translateY(-2px);          /* small lift */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* subtle shadow */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.unique-list ul li {
+    list-style-type: none;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px; /* optional: limit list width */
 }
 
 
@@ -145,12 +151,24 @@ ul li:hover {
     justify-content: center;
     align-items: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    appearance: none;        /* removes OS/browser-specific styles */
+    border: none;
+    outline: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
 }
 
 .btn:hover {
     transform: translateY(-2px);    
     background: linear-gradient(145deg, #5b4a89, #345d86);
     box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+.button-row .btn {
+    flex: 1;          /* buttons grow equally to fill the row */
+    width: 150px; /* optional limit */
+    text-align: center;
 }
 
 .btn.secondary {
@@ -169,7 +187,10 @@ ul li:hover {
     background: linear-gradient(145deg, #a156c8, #71459b);
 }
 
-/* Green "Play" button */
+.btn.fixed {
+    width: 120px;
+}
+
 .btn.play {
     background: linear-gradient(145deg, #28a745, #1e7e34); /* green gradient */
 }
@@ -206,6 +227,13 @@ ul li:hover {
     color: #f8f8f8;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.4);
     transition: all 0.2s ease;
+
+    -moz-appearance: textfield; /* Firefox */
+}
+.input-field::-webkit-inner-spin-button,
+.input-field::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Chrome, Safari, Edge */
+    margin: 0;
 }
 
 .input-field:focus {
@@ -215,9 +243,10 @@ ul li:hover {
 
 .button-row {
     display: flex;
+    align-items: center;
     justify-content: center; /* centers the group horizontally */
     gap: 20px; /* space between the buttons */
-    margin-top: 20px; /* optional spacing from elements above */
+    margin-top: 30px; /* optional spacing from elements above */
 }
 .form-actions {
     text-align: center;
