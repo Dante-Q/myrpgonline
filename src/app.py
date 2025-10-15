@@ -51,7 +51,7 @@ class CharacterForm(FlaskForm):
     intelligence = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
     charisma = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
     dev_mode = BooleanField(default=False)
-    submit = SubmitField("Create Character")
+    submit = SubmitField("Create")
 
 # -------------------- Routes --------------------
 

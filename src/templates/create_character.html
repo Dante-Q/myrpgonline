@@ -2,19 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Character</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My RPG | Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Create New Character</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <p>{{ form.name.label }} {{ form.name(size=20) }}</p>
-        <p>{{ form.strength.label }} {{ form.strength() }}</p>
-        <p>{{ form.intelligence.label }} {{ form.intelligence() }}</p>
-        <p>{{ form.charisma.label }} {{ form.charisma() }}</p>
-        <p>{{ form.dev_mode.label }} {{ form.dev_mode() }}</p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+
+    <header class="header-bar">
+        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+    </header>
+
+    <div class="container">
+        <h1>💪 Begin Your Tale</h1>
+        <p class="subtitle">A new story awaits!</p>
+        <p>Pick a name, shape your traits, and set off on an unforgettable journey!</p>
+
+        <div class="characters-section">
+
+            <h2>Your Characters:</h2>
+            <div class="characters-section">
+                <form method="POST" class="unique-list">
+                    {{ form.hidden_tag() }}
+                    <ul>
+                        <li>
+                            {{ form.name.label }}<br>
+                            {{ form.name(class="input-field") }}
+                        </li>
+                        <li>
+                            {{ form.strength.label }}<br>
+                            {{ form.strength(class="input-field") }}
+                        </li>
+                        <li>
+                            {{ form.intelligence.label }}<br>
+                            {{ form.intelligence(class="input-field") }}
+                        </li>
+                        <li>
+                            {{ form.charisma.label }}<br>
+                            {{ form.charisma(class="input-field") }}
+                        </li>
+                    </ul>
+                        <div class="button-row">
+                            {{ form.submit(class="btn play create-character-btn") }}
+                            <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back</a>   
+                        </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>
