@@ -22,13 +22,15 @@ function updateButtons() {
     const runBtn = document.getElementById('run_btn');
 
     if (monsterExists()) {
-        attackBtn.disabled = false;
-        exploreBtn.disabled = true;
-        runBtn.style.display = 'inline-block';
+        // Player is in a fight
+        attackBtn.style.display = 'inline-block';  // show attack
+        exploreBtn.style.display = 'none';         // hide explore
+        runBtn.style.display = 'inline-block';     // show run
     } else {
-        attackBtn.disabled = true;
-        exploreBtn.disabled = false;
-        runBtn.style.display = 'none';
+        // No monster
+        attackBtn.style.display = 'none';          // hide attack
+        exploreBtn.style.display = 'inline-block'; // show explore
+        runBtn.style.display = 'none';             // hide run
     }
 }
 

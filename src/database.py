@@ -37,12 +37,12 @@ class Character(db.Model):
 class Monster(db.Model):
     __tablename__ = 'monster'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
+    character_id = db.Column(db.Integer, db.ForeignKey('character.id'), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     max_hp = db.Column(db.Integer, nullable=False)
     current_hp = db.Column(db.Integer, nullable=False)
-    gold_reward = db.Column(db.Integer, default=10)
-    attack = db.Column(db.Integer, default=1)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    gold_reward = db.Column(db.Integer, default=0)
+    attack = db.Column(db.Integer, nullable=False)
 
 # -------------------- DB Initialization --------------------
 

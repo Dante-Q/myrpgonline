@@ -25,7 +25,7 @@ def attack(char_id):
     if character.user_id != current_user.id:
         return "Unauthorized", 403
 
-    monster = Monster.query.first()
+    monster = Monster.query.filter_by(character_id=character.id).first()
     if not monster:
         return jsonify({'message': 'No monster to attack!'}), 400
 
@@ -128,13 +128,14 @@ def explore(char_id):
         })
     elif chance < 0.5:
         # Monster encounter
-        monster_data = get_random_monster()
+        monster_template = get_random_monster()  # returns dict with current_hp already
         monster = Monster(
-            name=monster_data['name'],
-            max_hp=monster_data['max_hp'],
-            current_hp=monster_data['current_hp'],
-            attack=monster_data['strength'],
-            gold_reward=monster_data['gold_reward']
+            name=monster_template['name'],
+            max_hp=monster_template['max_hp'],
+            current_hp=monster_template['current_hp'],
+            gold_reward=monster_template['gold_reward'],
+            attack=monster_template['strength'],
+            character_id=character.id   # LINK MONSTER TO THIS CHARACTER
         )
         db.session.add(monster)
         db.session.commit()
