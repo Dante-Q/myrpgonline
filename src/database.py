@@ -29,9 +29,9 @@ class Character(db.Model):
     total_skill = db.Column(db.Integer, nullable=False)
     dev_mode = db.Column(db.Boolean, default=False)
     gold = db.Column(db.Integer, default=0)
-    hp = db.Column(db.Integer, default=50)  # <-- HP for combat
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     hp = db.Column(db.Integer, default=50)
+    max_hp = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 
 class Monster(db.Model):

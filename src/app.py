@@ -104,7 +104,8 @@ def create_character():
             charisma=form.charisma.data,
             luck=luck,
             total_skill=total_skill,
-            dev_mode=form.dev_mode.data
+            dev_mode=form.dev_mode.data,
+            max_hp=50
         )
         db.session.add(new_character)
         db.session.commit()

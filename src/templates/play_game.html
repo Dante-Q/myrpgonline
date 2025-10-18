@@ -48,5 +48,16 @@
     </div>
 
     <script src="{{ url_for('static', filename='game.js') }}"></script>
+        <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const charId = document.body.dataset.charId; // read from data attribute
+            fetch(`/current_monster/${charId}`)
+                .then(res => res.json())
+                .then(data => {
+                    updateButtons(data.monster_name ? { hp: data.monster_hp } : null);
+                })
+                .catch(err => console.error(err));
+        });
+    </script>
 </body>
 </html>

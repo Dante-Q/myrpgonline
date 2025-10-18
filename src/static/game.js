@@ -16,22 +16,46 @@ function monsterExists() {
     return monsterDiv.style.display === 'block' && parseInt(monsterHp.textContent) > 0;
 }
 
-function updateButtons() {
+function updateButtons(monster) {
     const attackBtn = document.getElementById('attack_btn');
     const exploreBtn = document.getElementById('explore_btn');
     const runBtn = document.getElementById('run_btn');
 
-    if (monsterExists()) {
-        // Player is in a fight
-        attackBtn.style.display = 'inline-block';  // show attack
-        exploreBtn.style.display = 'none';         // hide explore
-        runBtn.style.display = 'inline-block';     // show run
+    if (monster && monster.hp > 0) {
+        attackBtn.style.display = 'inline-block';
+        attackBtn.disabled = false;
+
+        exploreBtn.style.display = 'none';
+        exploreBtn.disabled = true;
+
+        runBtn.style.display = 'inline-block';
+        runBtn.disabled = false;
     } else {
-        // No monster
-        attackBtn.style.display = 'none';          // hide attack
-        exploreBtn.style.display = 'inline-block'; // show explore
-        runBtn.style.display = 'none';             // hide run
+        attackBtn.style.display = 'none';
+        attackBtn.disabled = true;
+
+        exploreBtn.style.display = 'inline-block';
+        exploreBtn.disabled = false;
+
+        runBtn.style.display = 'none';
+        runBtn.disabled = true;
     }
+}
+
+function updateMonsterUI(monsterData) {
+    const monsterDiv = document.getElementById('monster');
+    if (monsterData && monsterData.monster_name) {
+        monsterDiv.style.display = 'block';
+        document.getElementById('monster_name_placeholder').textContent = monsterData.monster_name;
+        document.getElementById('monster_hp').textContent = monsterData.monster_hp;
+        document.getElementById('monster_max_hp').textContent = monsterData.monster_max_hp || monsterData.monster_hp;
+    } else {
+        monsterDiv.style.display = 'none';
+        document.getElementById('monster_name_placeholder').textContent = '';
+        document.getElementById('monster_hp').textContent = '0';
+        document.getElementById('monster_max_hp').textContent = '0';
+    }
+    updateButtons(monsterData && monsterData.monster_name ? { hp: monsterData.monster_hp } : null);
 }
 
 // -------------------- Main Action Function --------------------
@@ -48,37 +72,12 @@ function performAction(action) {
     fetch(`/${action}/${charId}`)
         .then(res => res.json())
         .then(data => {
-            // Log message
             if (data.message) logMessage(data.message);
 
-            // Update player stats
             if (data.player_hp !== undefined) document.getElementById('player_hp').textContent = data.player_hp;
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
 
-            // Handle monster spawn/update
-            const monsterDiv = document.getElementById('monster');
-            if (data.monster_name) {
-                monsterDiv.style.display = 'block';
-                document.getElementById('monster_name_placeholder').textContent = data.monster_name;
-                document.getElementById('monster_hp').textContent = data.monster_hp;
-                document.getElementById('monster_max_hp').textContent = data.monster_max_hp;
-            } else if (data.monster_hp !== undefined) {
-                document.getElementById('monster_hp').textContent = data.monster_hp;
-            }
-
-            // Hide monster if defeated
-            if (data.monster_hp === 0) {
-                setTimeout(() => {
-                    monsterDiv.style.display = 'none';
-                    document.getElementById('monster_name_placeholder').textContent = '';
-                    document.getElementById('monster_hp').textContent = '0';
-                    document.getElementById('monster_max_hp').textContent = '0';
-                    updateButtons();
-                }, 2000);
-            }
-
-            // Update buttons dynamically
-            updateButtons();
+            updateMonsterUI(data);
         })
         .catch(err => {
             console.error("Error performing action:", err);
@@ -87,4 +86,11 @@ function performAction(action) {
 }
 
 // -------------------- Initialize --------------------
-document.addEventListener('DOMContentLoaded', updateButtons);
+document.addEventListener('DOMContentLoaded', () => {
+    fetch(`/current_monster/${charId}`)
+        .then(res => res.json())
+        .then(data => {
+            updateMonsterUI(data.monster_name ? data : null);
+        })
+        .catch(err => console.error('Error fetching current monster:', err));
+});
