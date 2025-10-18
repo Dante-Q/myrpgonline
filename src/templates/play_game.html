@@ -13,7 +13,7 @@
         <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
     </header>
 
-    <div class="container">
+    <div class="container" style="height: 700px;margin: 20px;">
         <h1>⚔️ Adventure with {{ character.name }}</h1>
         
         <!-- Player Stats -->
@@ -26,30 +26,33 @@
             </ul>
         </div> 
 
-        <!-- Monster Stats (Initially hidden) -->
-        <div id="monster" class="characters-section" style="display: none;">
-            <h2>Monster</h2>
-            <ul class="character-list">
-                <li><strong id="monster_name_placeholder">Monster Name</strong> HP: <span id="monster_hp">0</span> / <span id="monster_max_hp">0</span></li>
-            </ul>
-        </div>
-        
         <!-- Shop Section -->
         <div id="shop" class="characters-section">
             <h2>Shop</h2>
-            <ul id="shop_items"></ul>
+            <ul class="character-list" id="shop_items"></ul>
         </div>
+    </div>
 
-        <!-- Game Log -->
-        <div id="log" class="characters-section" style="height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
-            <h3>Game Log:</h3>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="button-row" id="actions">
-            <button id="attack_btn" class="btn play create-character-btn" onclick="performAction('attack')">Attack ⚔️</button>
-            <button id="explore_btn" class="btn third create-character-btn" onclick="performAction('explore')">Explore 🏞️</button>
-            <button id="run_btn" class="btn danger create-character-btn" onclick="performAction('run')" style="display:none;">Run 🏃‍♂️</button>
+    <div class="container" style="height: 700px;justify-content: center; margin: 20px;">  
+            <!-- Monster Stats (Initially hidden) -->
+            <div id="monster" class="characters-section" style="display: none;">
+                <h2>Monster</h2>
+                <ul class="character-list">
+                    <li><strong id="monster_name_placeholder">Monster Name</strong> HP: <span id="monster_hp">0</span> / <span id="monster_max_hp">0</span></li>
+                </ul>
+            </div>
+
+            <!-- Game Log -->
+            <div id="log" class="characters-section" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
+                <h3>Game Log:</h3>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="button-row" id="actions">
+                <button id="attack_btn" class="btn play create-character-btn" onclick="performAction('attack')">Attack ⚔️</button>
+                <button id="explore_btn" class="btn third create-character-btn" onclick="performAction('explore')">Explore 🏞️</button>
+                <button id="run_btn" class="btn danger create-character-btn" onclick="performAction('run')" style="display:none;">Run 🏃‍♂️</button>
+            </div>
         </div>
     </div>
 

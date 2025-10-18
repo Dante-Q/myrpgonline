@@ -121,15 +121,6 @@ p {
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-#shop ul {
-    list-style: none;
-    padding: 0;
-}
-
-#shop li {
-    margin: 5px 0;
-}
-
 .unique-list ul li {
     list-style-type: none;
     margin-bottom: 12px;
