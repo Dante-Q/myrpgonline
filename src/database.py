@@ -8,11 +8,11 @@ db = SQLAlchemy()
 # -------------------- Models --------------------
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'user'  
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
-    
+
     # Relationship to characters
     characters = db.relationship('Character', backref='user', lazy=True)
 
@@ -26,11 +26,22 @@ class Character(db.Model):
     intelligence = db.Column(db.Integer, nullable=False)
     charisma = db.Column(db.Integer, nullable=False)
     luck = db.Column(db.Integer, nullable=False)
-    gold = db.Column(db.Integer, default=0)
     total_skill = db.Column(db.Integer, nullable=False)
     dev_mode = db.Column(db.Boolean, default=False)
+    gold = db.Column(db.Integer, default=0)
+    hp = db.Column(db.Integer, default=50)  # <-- HP for combat
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    hp = db.Column(db.Integer, default=50)
 
+
+class Monster(db.Model):
+    __tablename__ = 'monster'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    max_hp = db.Column(db.Integer, nullable=False)
+    current_hp = db.Column(db.Integer, nullable=False)
+    gold_reward = db.Column(db.Integer, default=10)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 # -------------------- DB Initialization --------------------
 

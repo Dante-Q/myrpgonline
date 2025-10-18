@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My RPG | Play Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Fixed Header Bar -->
+    <header class="header-bar">
+        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
+    </header>
+
+    <div class="container">
+        <h1>⚔️ Adventure with {{ character.name }}</h1>
+        
+        <!-- Player Stats -->
+        <div class="characters-section">
+            <h2>Player Stats</h2>
+            <ul class="character-list">
+                <li><strong>HP:</strong> <span id="player_hp">{{ character.hp }}</span></li>
+                <li><strong>Gold:</strong> <span id="gold">{{ character.gold }}</span></li>
+                <li><strong>Strength:</strong> {{ character.strength }}</li>
+                <li><strong>Intelligence:</strong> {{ character.intelligence }}</li>
+                <li><strong>Charisma:</strong> {{ character.charisma }}</li>
+            </ul>
+        </div>
+
+        <!-- Monster Stats -->
+        <div class="characters-section">
+            <h2>Monster</h2>
+            <ul class="character-list">
+                <li><strong>{{ monster.name }} HP:</strong> <span id="monster_hp">{{ monster.current_hp }}</span> / {{ monster.max_hp }}</li>
+            </ul>
+        </div>
+
+        <!-- Game Log -->
+        <div id="log" class="characters-section" style="height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
+            <h3>Game Log:</h3>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="button-row" id="actions">
+            <button class="btn play create-character-btn" onclick="performAction('attack')">Attack ⚔️</button>
+            <button class="btn third create-character-btn" onclick="performAction('explore')">Explore 🏞️</button>
+        </div>
+
+    </div>
+
+    <script>
+        function performAction(action) {
+            fetch(`/${action}/{{ character.id }}`)
+                .then(res => res.json())
+                .then(data => {
+                    const log = document.getElementById('log');
+                    const p = document.createElement('p');
+                    p.textContent = data.message;
+                    log.appendChild(p);
+                    log.scrollTop = log.scrollHeight;
+
+                    if (data.gold !== undefined) {
+                        document.getElementById('gold').textContent = data.gold;
+                    }
+                    if (data.monster_hp !== undefined) {
+                        document.getElementById('monster_hp').textContent = data.monster_hp;
+                    }
+                    if (data.player_hp !== undefined) {
+                        document.getElementById('player_hp').textContent = data.player_hp;
+                    }
+                });
+        }
+    </script>
+
+</body>
+</html>

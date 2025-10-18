@@ -43,7 +43,7 @@
                 </ul>
             </div>
             <div class="button-row">
-                <a href="" class="btn play create-character-btn">Play</a> <!-- add functionality for play game in routeing-->
+                <a href="{{ url_for('play_game', char_id=character.id) }}" class="btn play create-character-btn">Play</a> <!-- add functionality for play game in routeing-->
                 <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back</a> <!-- merge create char button with brn class in css-->
             </div>
         
