@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, jsonify
 from flask_login import login_required, current_user
 from database import Character, Monster, db
 from monsters import get_random_monster
+from shop import SHOP_ITEMS
+
 import random
 
 game_routes = Blueprint('game_routes', __name__)
@@ -17,6 +19,54 @@ def play_game(char_id):
     # Get monster linked to this character (if exists)
     monster = Monster.query.filter_by(character_id=character.id).first()
     return render_template('play_game.html', character=character, monster=monster)
+
+@game_routes.route('/shop/<int:char_id>')
+@login_required
+def shop(char_id):
+    character = Character.query.get_or_404(char_id)
+    if character.user_id != current_user.id:
+        return "Unauthorized", 403
+
+    return jsonify({
+        "items": SHOP_ITEMS,
+        "gold": character.gold
+    })
+
+@game_routes.route('/buy_item/<int:char_id>/<int:item_id>')
+@login_required
+def buy_item(char_id, item_id):
+    character = Character.query.get_or_404(char_id)
+    if character.user_id != current_user.id:
+        return "Unauthorized", 403
+
+    item = next((i for i in SHOP_ITEMS if i["id"] == item_id), None)
+    if not item:
+        return jsonify({"message": "Item not found!"}), 404
+
+    if character.gold < item["cost"]:
+        return jsonify({"message": f"Not enough gold to buy {item['name']}!", "gold": character.gold})
+
+    # Deduct gold
+    character.gold -= item["cost"]
+
+    # Apply item effects
+    if "hp_restore" in item:
+        character.hp = min(character.max_hp, character.hp + item["hp_restore"])
+    if "strength_bonus" in item:
+        character.strength += item["strength_bonus"]
+    if "hp_bonus" in item:
+        character.max_hp += item["hp_bonus"]
+        character.hp += item["hp_bonus"]  # also heal by bonus
+
+    db.session.commit()
+
+    return jsonify({
+        "message": f"{character.name} bought {item['name']}!",
+        "gold": character.gold,
+        "player_hp": character.hp,
+        "player_max_hp": character.max_hp,
+        "player_strength": character.strength
+    })
 
 # ------------------ Get Current Monster ------------------
 @game_routes.route('/current_monster/<int:char_id>')
@@ -198,22 +248,3 @@ def explore(char_id):
             'message': ' '.join(log_messages),
             'gold': character.gold
         })
-
-
-# ------------------ Buy Item ------------------
-@game_routes.route('/buy_item/<int:char_id>')
-@login_required
-def buy_item(char_id):
-    character = Character.query.get_or_404(char_id)
-    if character.user_id != current_user.id:
-        return "Unauthorized", 403
-
-    item_cost = 15
-    if character.gold >= item_cost:
-        character.gold -= item_cost
-        db.session.commit()
-        message = f"{character.name} buys an item for {item_cost} gold!"
-    else:
-        message = f"{character.name} does not have enough gold to buy an item."
-
-    return jsonify({'message': message, 'gold': character.gold})

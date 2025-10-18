@@ -85,6 +85,36 @@ function performAction(action) {
         });
 }
 
+function loadShop() {
+    fetch(`/shop/${charId}`)
+        .then(res => res.json())
+        .then(data => {
+            const shopList = document.getElementById('shop_items');
+            shopList.innerHTML = '';
+            data.items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name} - ${item.cost} gold <button onclick="buyItem(${item.id})">Buy</button>`;
+                shopList.appendChild(li);
+            });
+        });
+}
+
+function buyItem(itemId) {
+    fetch(`/buy_item/${charId}/${itemId}`)
+        .then(res => res.json())
+        .then(data => {
+            logMessage(data.message);
+            if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
+            if (data.player_hp !== undefined) document.getElementById('player_hp').textContent = data.player_hp;
+        });
+}
+
+// Load shop on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadShop();
+});
+
+
 // -------------------- Initialize --------------------
 document.addEventListener('DOMContentLoaded', () => {
     fetch(`/current_monster/${charId}`)
