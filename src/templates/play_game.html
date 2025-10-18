@@ -17,17 +17,17 @@
         <h1>⚔️ Adventure with {{ character.name }}</h1>
         
         <!-- Player Stats -->
-        <div class="characters-section">
+        <div class="characters-section" style="padding: 10px;">
             <h2>Player Stats</h2>
             <ul class="character-list">
-                <li><strong>HP:</strong> <span id="player_hp">{{ character.hp }}</span></li>
-                <li><strong>Strength:</strong> {{ character.strength }}</li>
+                <li><strong>HP:</strong> <span class="player_hp">{{ character.hp }}</span></li>
+                <li><strong>Strength:</strong> <span id="player_strength">{{ character.strength }}</span></li>
                 <li><strong>Gold:</strong> <span id="gold">{{ character.gold }}</span></li>
             </ul>
         </div> 
 
         <!-- Shop Section -->
-        <div id="shop" class="characters-section">
+        <div id="shop" class="characters-section" style="padding: 10px;">
             <h2>Shop</h2>
             <ul class="character-list" id="shop_items"></ul>
         </div>
@@ -37,7 +37,8 @@
             <!-- Monster Stats (Initially hidden) -->
             <div id="monster" class="characters-section" style="display: none;">
                 <h2>Monster</h2>
-                <ul class="character-list">
+                <ul class="character-list" style="padding: 10px;">
+                    <li><strong>{{ character.name }} HP:</strong> <span class="player_hp">{{ character.hp }}</span></li>
                     <li><strong id="monster_name_placeholder">Monster Name</strong> HP: <span id="monster_hp">0</span> / <span id="monster_max_hp">0</span></li>
                 </ul>
             </div>

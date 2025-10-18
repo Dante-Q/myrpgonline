@@ -74,8 +74,9 @@ function performAction(action) {
         .then(data => {
             if (data.message) logMessage(data.message);
 
-            if (data.player_hp !== undefined) document.getElementById('player_hp').textContent = data.player_hp;
+            if (data.player_hp !== undefined) document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
+            if (data.player_strength !== undefined) document.getElementById('player_strength').textContent = data.player_strength;
 
             updateMonsterUI(data);
         })
@@ -105,7 +106,7 @@ function buyItem(itemId) {
         .then(data => {
             logMessage(data.message);
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
-            if (data.player_hp !== undefined) document.getElementById('player_hp').textContent = data.player_hp;
+            if (data.player_hp !== undefined) document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
         });
 }
 
