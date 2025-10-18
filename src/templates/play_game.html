@@ -6,7 +6,7 @@
     <title>My RPG | Play Game</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
+<body data-char-id="{{ character.id }}">
     <!-- Fixed Header Bar -->
     <header class="header-bar">
         <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
@@ -21,18 +21,16 @@
             <h2>Player Stats</h2>
             <ul class="character-list">
                 <li><strong>HP:</strong> <span id="player_hp">{{ character.hp }}</span></li>
-                <li><strong>Gold:</strong> <span id="gold">{{ character.gold }}</span></li>
                 <li><strong>Strength:</strong> {{ character.strength }}</li>
-                <li><strong>Intelligence:</strong> {{ character.intelligence }}</li>
-                <li><strong>Charisma:</strong> {{ character.charisma }}</li>
+                <li><strong>Gold:</strong> <span id="gold">{{ character.gold }}</span></li>
             </ul>
-        </div>
+        </div> 
 
-        <!-- Monster Stats -->
-        <div class="characters-section">
+        <!-- Monster Stats (Initially hidden) -->
+        <div id="monster" class="characters-section" style="display: none;">
             <h2>Monster</h2>
             <ul class="character-list">
-                <li><strong>{{ monster.name }} HP:</strong> <span id="monster_hp">{{ monster.current_hp }}</span> / {{ monster.max_hp }}</li>
+                <li><strong id="monster_name_placeholder">Monster Name</strong> HP: <span id="monster_hp">0</span> / <span id="monster_max_hp">0</span></li>
             </ul>
         </div>
 
@@ -43,35 +41,12 @@
         
         <!-- Action Buttons -->
         <div class="button-row" id="actions">
-            <button class="btn play create-character-btn" onclick="performAction('attack')">Attack ⚔️</button>
-            <button class="btn third create-character-btn" onclick="performAction('explore')">Explore 🏞️</button>
+            <button id="attack_btn" class="btn play create-character-btn" onclick="performAction('attack')">Attack ⚔️</button>
+            <button id="explore_btn" class="btn third create-character-btn" onclick="performAction('explore')">Explore 🏞️</button>
+            <button id="run_btn" class="btn danger create-character-btn" onclick="performAction('run')" style="display:none;">Run 🏃‍♂️</button>
         </div>
-
     </div>
 
-    <script>
-        function performAction(action) {
-            fetch(`/${action}/{{ character.id }}`)
-                .then(res => res.json())
-                .then(data => {
-                    const log = document.getElementById('log');
-                    const p = document.createElement('p');
-                    p.textContent = data.message;
-                    log.appendChild(p);
-                    log.scrollTop = log.scrollHeight;
-
-                    if (data.gold !== undefined) {
-                        document.getElementById('gold').textContent = data.gold;
-                    }
-                    if (data.monster_hp !== undefined) {
-                        document.getElementById('monster_hp').textContent = data.monster_hp;
-                    }
-                    if (data.player_hp !== undefined) {
-                        document.getElementById('player_hp').textContent = data.player_hp;
-                    }
-                });
-        }
-    </script>
-
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
 </body>
 </html>

@@ -41,6 +41,7 @@ class Monster(db.Model):
     max_hp = db.Column(db.Integer, nullable=False)
     current_hp = db.Column(db.Integer, nullable=False)
     gold_reward = db.Column(db.Integer, default=10)
+    attack = db.Column(db.Integer, default=1)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 # -------------------- DB Initialization --------------------

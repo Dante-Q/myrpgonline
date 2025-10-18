@@ -1,32 +1,21 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_required, current_user
 from database import Character, Monster, db
+from monsters import get_random_monster
 import random
 
 # Create a Blueprint
 game_routes = Blueprint('game_routes', __name__)
 
 # ------------------ Play Game ------------------
-@game_routes.route('/play_game/<int:char_id>', methods=['GET', 'POST'])
+@game_routes.route('/play_game/<int:char_id>', methods=['GET'])
 @login_required
 def play_game(char_id):
     character = Character.query.get_or_404(char_id)
     if character.user_id != current_user.id:
         return "Unauthorized", 403
 
-    # Get or create a monster
-    monster = Monster.query.first()
-    if not monster:
-        monster = Monster(
-            name="Goblin",
-            max_hp=50,
-            current_hp=50,
-            gold_reward=20
-        )
-        db.session.add(monster)
-        db.session.commit()
-
-    return render_template('play_game.html', character=character, monster=monster)
+    return render_template('play_game.html', character=character)
 
 # ------------------ Attack ------------------
 @game_routes.route('/attack/<int:char_id>')
@@ -62,24 +51,61 @@ def attack(char_id):
         })
 
     # -------- Monster attacks --------
-    monster_base = random.randint(1, 5)
-    monster_damage = monster_base  # Could scale with monster difficulty
+    monster_damage = monster.attack
     character.hp -= monster_damage
     log_messages.append(f"{monster.name} attacks {character.name} for {monster_damage} damage!")
 
-    # Check if player is dead
     if character.hp <= 0:
         log_messages.append(f"{character.name} has been defeated!")
-        character.hp = 0  # prevent negative HP
+        character.hp = 0
 
     db.session.commit()
-
     return jsonify({
         'message': ' '.join(log_messages),
         'gold': character.gold,
         'monster_hp': monster.current_hp,
         'player_hp': character.hp
     })
+
+@game_routes.route('/run/<int:char_id>')
+@login_required
+def run_away(char_id):
+    character = Character.query.get_or_404(char_id)
+    if character.user_id != current_user.id:
+        return "Unauthorized", 403
+
+    monster = Monster.query.first()
+    if not monster:
+        return jsonify({'message': 'There is no monster to run from!'}), 400
+
+    log_messages = []
+    success = random.random() < 0.5  # 50% chance to run
+    if success:
+        log_messages.append(f"{character.name} successfully ran away from {monster.name}!")
+        db.session.delete(monster)  # remove monster from DB
+        db.session.commit()
+        return jsonify({
+            'message': ' '.join(log_messages),
+            'gold': character.gold,
+            'player_hp': character.hp,
+            'monster_hp': 0,
+            'monster_name': ''
+        })
+    else:
+        # Monster attacks on failed escape
+        monster_base = random.randint(1, 5)
+        character.hp -= monster_base
+        if character.hp < 0:
+            character.hp = 0
+        log_messages.append(f"{character.name} failed to run! {monster.name} attacks for {monster_base} damage!")
+        db.session.commit()
+        return jsonify({
+            'message': ' '.join(log_messages),
+            'gold': character.gold,
+            'player_hp': character.hp,
+            'monster_hp': monster.current_hp,
+            'monster_name': monster.name
+        })
 
 # ------------------ Explore ------------------
 @game_routes.route('/explore/<int:char_id>')
@@ -89,12 +115,48 @@ def explore(char_id):
     if character.user_id != current_user.id:
         return "Unauthorized", 403
 
-    gold_found = random.randint(5, 20)
-    character.gold += gold_found
-    db.session.commit()
+    log_messages = []
+    chance = random.random()
 
-    message = f"{character.name} explores and finds {gold_found} gold!"
-    return jsonify({'message': message, 'gold': character.gold})
+    if chance < 0.1:
+        # Shop encounter
+        log_messages.append(f"{character.name} discovers a hidden shop!")
+        return jsonify({
+            'message': ' '.join(log_messages),
+            'outcome': 'shop',
+            'gold': character.gold
+        })
+    elif chance < 0.5:
+        # Monster encounter
+        monster_data = get_random_monster()
+        monster = Monster(
+            name=monster_data['name'],
+            max_hp=monster_data['max_hp'],
+            current_hp=monster_data['current_hp'],
+            attack=monster_data['strength'],
+            gold_reward=monster_data['gold_reward']
+        )
+        db.session.add(monster)
+        db.session.commit()
+        log_messages.append(f"{character.name} encounters a {monster.name}!")
+
+        return jsonify({
+            'message': ' '.join(log_messages),
+            'monster_name': monster.name,
+            'monster_hp': monster.current_hp,
+            'monster_max_hp': monster.max_hp,
+            'gold': character.gold
+        })
+    else:
+        # Find gold
+        gold_found = random.randint(5, 20)
+        character.gold += gold_found
+        db.session.commit()
+        log_messages.append(f"{character.name} explores and finds {gold_found} gold!")
+        return jsonify({
+            'message': ' '.join(log_messages),
+            'gold': character.gold
+        })
 
 # ------------------ Buy Item ------------------
 @game_routes.route('/buy_item/<int:char_id>')
