@@ -9,6 +9,7 @@
 <body>
 
     <header class="header-bar">
+        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
         <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
     </header>
 
@@ -16,9 +17,9 @@
         <h1>{{character.name}}</h1>
         <div class="characters-section">
 
-            <h2>Character Details:</h2>
-            <div class="characters-section">
-                <ul class="character-list">
+            <h2 style="padding: 20px;">Character Details:</h2>
+            <div class="characters-section" style="padding: 20px;">
+                <ul class="character-list" style="pointer-events: none;">
                     <li>
                         Strength: {{ character.strength }}
                     </li>

@@ -94,11 +94,21 @@ function loadShop() {
             shopList.innerHTML = '';
             data.items.forEach(item => {
                 const li = document.createElement('li');
-                li.innerHTML = `${item.name} - ${item.cost} gold <button onclick="buyItem(${item.id})">Buy</button>`;
+                li.textContent = `${item.name} - ${item.cost} gold`;
+                li.dataset.itemName = item.name; // add this for click handler
                 shopList.appendChild(li);
             });
-        });
+        })
+        .catch(err => console.error("Error loading shop items:", err));
 }
+
+// Event delegation to buy items when clicked
+document.getElementById('shop_items').addEventListener('click', (event) => {
+    const li = event.target;
+    if (li.dataset.itemName) {
+        buyItem(li.dataset.itemName);
+    }
+});
 
 function buyItem(itemId) {
     fetch(`/buy_item/${charId}/${itemId}`)

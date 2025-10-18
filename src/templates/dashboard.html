@@ -9,7 +9,7 @@
 <body>
     <!-- Fixed Header Bar -->
     <header class="header-bar">
-        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+        <a href="{{ url_for('logout') }}" class="btn danger" style="margin: 10px;">🚪 Logout</a>
     </header>
 
     <div class="container">
@@ -22,7 +22,7 @@
             <ul class="character-list">
                 {% for char in characters %}
                     <li onclick="window.location='{{ url_for('view_character', char_id=char.id) }}'">
-                        {{ char.name }} - STR: {{ char.strength }}, INT: {{ char.intelligence }}, CHA: {{ char.charisma }}
+                        {{ char.name }} - STR: {{ char.strength }}, Health: {{ char.max_hp }}, Gold: {{ char.gold }}
                     </li>
                 {% else %}
                     <li>No characters yet.</li>

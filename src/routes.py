@@ -20,6 +20,7 @@ def play_game(char_id):
     monster = Monster.query.filter_by(character_id=character.id).first()
     return render_template('play_game.html', character=character, monster=monster)
 
+# ------------------ Shop ------------------
 @game_routes.route('/shop/<int:char_id>')
 @login_required
 def shop(char_id):
@@ -29,9 +30,11 @@ def shop(char_id):
 
     return jsonify({
         "items": SHOP_ITEMS,
-        "gold": character.gold
+        "gold": character.gold,
+        "strength": character.strength
     })
 
+#------------------ Buy Item ------------------
 @game_routes.route('/buy_item/<int:char_id>/<int:item_id>')
 @login_required
 def buy_item(char_id, item_id):
@@ -57,7 +60,7 @@ def buy_item(char_id, item_id):
     if "hp_bonus" in item:
         character.max_hp += item["hp_bonus"]
         character.hp += item["hp_bonus"]  # also heal by bonus
-
+    
     db.session.commit()
 
     return jsonify({
