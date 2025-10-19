@@ -9,8 +9,8 @@
 <body data-char-id="{{ character.id }}">
     <!-- Fixed Header Bar -->
     <header class="header-bar">
-        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
-        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+        <a href="{{ url_for('core_routes.dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
+        <a href="{{ url_for('core_routes.logout') }}" class="btn danger">🚪 Logout</a>
     </header>
 
     <div class="container" style="height: 700px;margin: 20px;">

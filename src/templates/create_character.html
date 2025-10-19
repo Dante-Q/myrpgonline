@@ -9,8 +9,8 @@
 <body>
 
     <header class="header-bar">
-        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
-        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+        <a href="{{ url_for('core_routes.dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
+        <a href="{{ url_for('core_routes.logout') }}" class="btn danger">🚪 Logout</a>
     </header>
 
     <div class="container">
@@ -20,7 +20,7 @@
         </p>
 
             <div class="characters-section">
-                <form method="POST" class="form unique-list">
+                <form action="{{ url_for('core_routes.create_character') }}" method="POST" class="form unique-list">
                     {{ form.hidden_tag() }}
 
                     <div class="form-group">
@@ -29,7 +29,7 @@
                     </div>
                     <div class="button-row">
                         {{ form.submit(class="btn play create-character-btn") }}
-                        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back</a>   
+                        <a href="{{ url_for('core_routes.dashboard') }}" class="btn third create-character-btn">Back</a>   
                     </div>    
                 </form>
             </div>

@@ -4,8 +4,8 @@ from flask_bcrypt import Bcrypt
 
 # Import database and models
 from database import db, User, Character, init_db
+from routes import core_routes
 from game_routes import game_routes
-from forms import RegistrationForm, LoginForm, CharacterForm
 
 # -------------------- Flask App Setup --------------------
 
@@ -16,6 +16,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 # Initialize DB and Bcrypt
 init_db(app)
 bcrypt = Bcrypt(app)
+app.register_blueprint(core_routes)
 app.register_blueprint(game_routes)
 
 # -------------------- Flask-Login Setup --------------------
@@ -27,71 +28,6 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-
-# -------------------- Routes --------------------
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data.title()).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user)
-            return redirect(url_for('dashboard'))
-    return render_template('login.html', form=form)
-
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data.title(), password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
-        return redirect(url_for('dashboard'))
-    return render_template('register.html', form=form)
-
-@app.route('/create_character', methods=['GET', 'POST'])
-@login_required
-def create_character():
-    form = CharacterForm()
-    if form.validate_on_submit():
-
-        new_character = Character(
-            user_id=current_user.id,
-            name=form.name.data.title()
-        )
-        db.session.add(new_character)
-        db.session.commit()
-        return redirect(url_for('dashboard'))
-
-    return render_template('create_character.html', form=form)
-
-@app.route('/view_character/<int:char_id>')
-@login_required
-def view_character(char_id):
-    character = Character.query.get_or_404(char_id)
-    if character.user_id != current_user.id:
-        return "Unauthorized", 403
-    return render_template('view_character.html', character=character)
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    characters = current_user.characters  # list of characters for this user
-    return render_template('dashboard.html', name=current_user.username, characters=characters)
 
 # -------------------- Main Entry Point -------------------- 
 
