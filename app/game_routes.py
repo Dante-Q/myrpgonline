@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_required, current_user
-from database import Character, Monster, db
-from monsters import get_random_monster
-from shop import SHOP_ITEMS
+from .database import Character, Monster, db
+from .monsters import get_random_monster
+from .shop import SHOP_ITEMS
 
 import random
 
-game_routes = Blueprint('game_routes', __name__)
+game_routes = Blueprint('game_routes', __name__, template_folder='../templates')
 
 # ------------------ Play Game ------------------
 @game_routes.route('/play_game/<int:char_id>', methods=['GET'])
