@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, login_user, logout_user, current_user
-from forms import RegistrationForm, LoginForm, CharacterForm
-from database import db, User, Character
+from .forms import RegistrationForm, LoginForm, CharacterForm
+from .database import db, User, Character
 from flask_bcrypt import Bcrypt
 
-core_routes = Blueprint('core_routes', __name__, template_folder='templates')
+core_routes = Blueprint('core_routes', __name__, template_folder='../templates')
 bcrypt = Bcrypt()  
 
 # -------------------- Routes --------------------
@@ -17,13 +17,15 @@ def index():
 @core_routes.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    error = None  # default no error
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data.title()).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('core_routes.dashboard'))
-    return render_template('login.html', form=form)
-
+        else:
+            error = "Invalid username or password. Please try again."
+    return render_template('login.html', form=form, error=error)
 
 @core_routes.route('/logout', methods=['GET', 'POST'])
 @login_required
