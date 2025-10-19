@@ -49,10 +49,6 @@ class LoginForm(FlaskForm):
 
 class CharacterForm(FlaskForm):
     name = StringField(validators=[InputRequired(), Length(max=20)], render_kw={"placeholder": "Character Name"})
-    strength = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
-    intelligence = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
-    charisma = IntegerField(validators=[InputRequired(), NumberRange(min=0, max=10)], default=0)
-    dev_mode = BooleanField(default=False)
     submit = SubmitField("Create")
 
 # -------------------- Routes --------------------
@@ -85,7 +81,8 @@ def register():
         new_user = User(username=form.username.data.title(), password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for('login'))
+        login_user(new_user)
+        return redirect(url_for('dashboard'))
     return render_template('register.html', form=form)
 
 @app.route('/create_character', methods=['GET', 'POST'])
@@ -93,19 +90,10 @@ def register():
 def create_character():
     form = CharacterForm()
     if form.validate_on_submit():
-        total_skill = form.strength.data + form.intelligence.data + form.charisma.data
-        luck = 10 if form.dev_mode.data else __import__('random').randint(1, 10)
 
         new_character = Character(
             user_id=current_user.id,
-            name=form.name.data.title(),
-            strength=form.strength.data,
-            intelligence=form.intelligence.data,
-            charisma=form.charisma.data,
-            luck=luck,
-            total_skill=total_skill,
-            dev_mode=form.dev_mode.data,
-            max_hp=50
+            name=form.name.data.title()
         )
         db.session.add(new_character)
         db.session.commit()
@@ -136,7 +124,7 @@ def dashboard():
     characters = current_user.characters  # list of characters for this user
     return render_template('dashboard.html', name=current_user.username, characters=characters)
 
-# -------------------- Main Entry Point --------------------
+# -------------------- Main Entry Point -------------------- 
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

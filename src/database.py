@@ -22,15 +22,10 @@ class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # links character to user
     name = db.Column(db.String(20), nullable=False)
-    strength = db.Column(db.Integer, nullable=False)
-    intelligence = db.Column(db.Integer, nullable=False)
-    charisma = db.Column(db.Integer, nullable=False)
-    luck = db.Column(db.Integer, nullable=False)
-    total_skill = db.Column(db.Integer, nullable=False)
-    dev_mode = db.Column(db.Boolean, default=False)
+    strength = db.Column(db.Integer, default=10)
     gold = db.Column(db.Integer, default=0)
     hp = db.Column(db.Integer, default=50)
-    max_hp = db.Column(db.Integer, nullable=False)
+    max_hp = db.Column(db.Integer, default=50)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 
@@ -44,7 +39,7 @@ class Monster(db.Model):
     gold_reward = db.Column(db.Integer, default=0)
     attack = db.Column(db.Integer, nullable=False)
 
-# -------------------- DB Initialization --------------------
+# -------------------- DB Initialization -------------------- 
 
 def init_db(app):
     db.init_app(app)
