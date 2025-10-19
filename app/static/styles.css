@@ -130,6 +130,11 @@ p {
     max-width: 400px; /* optional: limit list width */
 }
 
+.error-message {
+    color: rgb(219, 75, 75);
+    font-weight: bold;
+    margin-top: 5px;
+}
 
 /* Create Character Button */
 .create-character-btn {

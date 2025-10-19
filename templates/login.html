@@ -23,7 +23,9 @@
                 <label for="password">Password</label>
                 {{ form.password(class="input-field", placeholder="Enter your password") }}
             </div>
-
+            {% if error %}
+                <p class="error-message" style="text-align: center; margin: 0px;">{{ error }}</p>
+            {% endif %}
             <div class="form-actions">
                 {{ form.submit(class="btn") }}
             </div>
