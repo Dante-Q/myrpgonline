@@ -1,13 +1,11 @@
 from flask import Flask, render_template, url_for, redirect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
-from wtforms.validators import InputRequired, Length, ValidationError, NumberRange
 from flask_bcrypt import Bcrypt
 
 # Import database and models
 from database import db, User, Character, init_db
-from routes import game_routes
+from game_route import game_routes
+from forms import RegistrationForm, LoginForm, CharacterForm
 
 # -------------------- Flask App Setup --------------------
 
@@ -30,26 +28,6 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# -------------------- Forms --------------------
-
-class RegistrationForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Password"})
-    submit = SubmitField("Register")
-
-    def validate_username(self, username):
-        existing_user = User.query.filter_by(username=username.data.title()).first()
-        if existing_user:
-            raise ValidationError("That username already exists. Please choose a different one.")
-
-class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Password"})
-    submit = SubmitField("Login")
-
-class CharacterForm(FlaskForm):
-    name = StringField(validators=[InputRequired(), Length(max=20)], render_kw={"placeholder": "Character Name"})
-    submit = SubmitField("Create")
 
 # -------------------- Routes --------------------
 
@@ -108,6 +86,15 @@ def view_character(char_id):
     if character.user_id != current_user.id:
         return "Unauthorized", 403
     return render_template('view_character.html', character=character)
+
+
+@app.route('/play_game/<int:char_id>', methods=['GET', 'POST'])
+@login_required
+def play_game(char_id):
+    character = Character.query.get(char_id)
+    if not character:
+        return "Character not found", 404
+    return render_template('play_game.html', character=character)
 
 @app.route('/dashboard')
 @login_required
