@@ -11,7 +11,7 @@
         <h1>🔐 Login</h1>
         <p class="subtitle">Welcome back, adventurer. Continue your journey below.</p>
 
-        <form action="{{ url_for('login') }}" method="post" class="form">
+        <form action="{{ url_for('core_routes.login') }}" method="post" class="form">
             {{ form.hidden_tag() }}
 
             <div class="form-group">
@@ -31,10 +31,10 @@
 
         <p class="small-text">
             Don't have an account?
-            <a href="{{ url_for('register') }}" class="link">Sign up here</a>.
+            <a href="{{ url_for('core_routes.register') }}" class="link">Sign up here</a>.
         </p>
 
-        <p><a href="{{ url_for('index') }}" class="link">⬅️ Back to Home</a></p>
+        <p><a href="{{ url_for('core_routes.index') }}" class="link">⬅️ Back to Home</a></p>
     </div>
 </body>
 </html>

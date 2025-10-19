@@ -9,8 +9,8 @@
 <body>
 
     <header class="header-bar">
-        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
-        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+        <a href="{{ url_for('core_routes.dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
+        <a href="{{ url_for('core_routes.logout') }}" class="btn danger">🚪 Logout</a>
     </header>
 
     <div class="container">
@@ -32,8 +32,8 @@
                 </ul>
             </div>
             <div class="button-row">
-                <a href="{{ url_for('play_game', char_id=character.id) }}" class="btn play create-character-btn">Play</a> <!-- add functionality for play game in routeing-->
-                <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">Back</a> <!-- merge create char button with brn class in css-->
+                <a href="{{ url_for('game_routes.play_game', char_id=character.id) }}" class="btn play create-character-btn">Play</a> <!-- add functionality for play game in routeing-->
+                <a href="{{ url_for('core_routes.dashboard') }}" class="btn third create-character-btn">Back</a> <!-- merge create char button with brn class in css-->
             </div>
         
     </div>

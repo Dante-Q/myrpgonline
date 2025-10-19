@@ -48,7 +48,9 @@ function updateMonsterUI(monsterData) {
         monsterDiv.style.display = 'block';
         document.getElementById('monster_name_placeholder').textContent = monsterData.monster_name;
         document.getElementById('monster_hp').textContent = monsterData.monster_hp;
-        document.getElementById('monster_max_hp').textContent = monsterData.monster_max_hp || monsterData.monster_hp;
+        if (monsterData.monster_max_hp !== undefined) {
+            document.getElementById('monster_max_hp').textContent = monsterData.monster_max_hp;
+        }
     } else {
         monsterDiv.style.display = 'none';
         document.getElementById('monster_name_placeholder').textContent = '';
@@ -76,7 +78,8 @@ function performAction(action) {
 
             if (data.player_hp !== undefined) document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
-            if (data.player_strength !== undefined) document.getElementById('player_strength').textContent = data.player_strength;
+            if (data.player_strength !== undefined) document.querySelectorAll('.player_strength').forEach(el => el.textContent = data.player_strength);
+
 
             updateMonsterUI(data);
         })
@@ -117,6 +120,7 @@ function buyItem(itemId) {
             logMessage(data.message);
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
             if (data.player_hp !== undefined) document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
+            if (data.player_strength !== undefined) document.querySelectorAll('.player_strength').forEach(el => el.textContent = data.player_strength);
         });
 }
 
