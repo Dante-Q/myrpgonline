@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 
 # Import database and models
 from database import db, User, Character, init_db
-from game_route import game_routes
+from game_routes import game_routes
 from forms import RegistrationForm, LoginForm, CharacterForm
 
 # -------------------- Flask App Setup --------------------
@@ -86,15 +86,6 @@ def view_character(char_id):
     if character.user_id != current_user.id:
         return "Unauthorized", 403
     return render_template('view_character.html', character=character)
-
-
-@app.route('/play_game/<int:char_id>', methods=['GET', 'POST'])
-@login_required
-def play_game(char_id):
-    character = Character.query.get(char_id)
-    if not character:
-        return "Character not found", 404
-    return render_template('play_game.html', character=character)
 
 @app.route('/dashboard')
 @login_required
