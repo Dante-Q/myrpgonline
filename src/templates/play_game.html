@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My RPG | Play Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body data-char-id="{{ character.id }}">
+    <!-- Fixed Header Bar -->
+    <header class="header-bar">
+        <a href="{{ url_for('dashboard') }}" class="btn third create-character-btn">🏠 Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="btn danger">🚪 Logout</a>
+    </header>
+
+    <div class="container" style="height: 700px;margin: 20px;">
+        <h1>⚔️ Adventure with {{ character.name }}</h1>
+        
+        <!-- Player Stats -->
+        <div class="characters-section" style="padding: 10px;">
+            <h2>Player Stats</h2>
+            <ul class="character-list" style="pointer-events: none;">
+                <li><strong>HP:</strong> <span class="player_hp">{{ character.hp }}</span></li>
+                <li><strong>Strength:</strong> <span id="player_strength">{{ character.strength }}</span></li>
+                <li><strong>Gold:</strong> <span id="gold">{{ character.gold }}</span></li>
+            </ul>
+        </div> 
+
+        <!-- Shop Section -->
+        <div id="shop" class="characters-section" style="padding: 10px;">
+            <h2>Shop</h2>
+            <ul class="character-list" id="shop_items"></ul>
+        </div>
+    </div>
+
+    <div class="container" style="height: 700px;justify-content: center; margin: 20px;">  
+            <!-- Monster Stats (Initially hidden) -->
+            <div id="monster" class="characters-section" style="display: none;">
+                <h2>Monster</h2>
+                <ul class="character-list" style="padding: 10px; pointer-events: none;" >
+                    <li><strong>{{ character.name }} HP:</strong> <span class="player_hp">{{ character.hp }}</span></li>
+                    <li><strong id="monster_name_placeholder">Monster Name</strong> HP: <span id="monster_hp">0</span> / <span id="monster_max_hp">0</span></li>
+                </ul>
+            </div>
+
+            <!-- Game Log -->
+            <div id="log" class="characters-section" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
+                <h3>Game Log:</h3>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="button-row" id="actions">
+                <button id="attack_btn" class="btn play create-character-btn" onclick="performAction('attack')">Attack ⚔️</button>
+                <button id="explore_btn" class="btn third create-character-btn" onclick="performAction('explore')">Explore 🏞️</button>
+                <button id="run_btn" class="btn danger create-character-btn" onclick="performAction('run')" style="display:none;">Run 🏃‍♂️</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const charId = document.body.dataset.charId; // read from data attribute
+
+        // -------------------- Load current monster --------------------
+        fetch(`/current_monster/${charId}`)
+            .then(res => res.json())
+            .then(data => {
+                updateButtons(data.monster_name ? { hp: data.monster_hp } : null);
+            })
+            .catch(err => console.error(err));
+
+        // -------------------- Load shop items --------------------
+        const shopList = document.getElementById('shop_items');
+
+        function loadShop() {
+            fetch(`/shop/${charId}`)
+                .then(res => res.json())
+                .then(data => {
+                    shopList.innerHTML = '';
+                    data.items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.name} - ${item.cost} gold`;
+                        li.dataset.itemId = item.id; // store the item ID
+                        shopList.appendChild(li);
+                    });
+                });
+        }
+
+        loadShop(); // initial load
+
+        // -------------------- Shop click listener (event delegation) --------------------
+        shopList.addEventListener('click', (event) => {
+            const li = event.target.closest('li');
+            if (li && li.dataset.itemId) {
+                const itemId = li.dataset.itemId;
+                fetch(`/buy_item/${charId}/${itemId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        logMessage(data.message);
+                        if (data.gold !== undefined)
+                            document.getElementById('gold').textContent = data.gold;
+                        if (data.player_hp !== undefined)
+                            document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
+                        // Optionally reload shop to reflect purchased items
+                        loadShop();
+                    })
+                    .catch(err => console.error(err));
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>

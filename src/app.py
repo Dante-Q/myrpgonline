@@ -7,6 +7,7 @@ from flask_bcrypt import Bcrypt
 
 # Import database and models
 from database import db, User, Character, init_db
+from routes import game_routes
 
 # -------------------- Flask App Setup --------------------
 
@@ -17,6 +18,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 # Initialize DB and Bcrypt
 init_db(app)
 bcrypt = Bcrypt(app)
+app.register_blueprint(game_routes)
 
 # -------------------- Flask-Login Setup --------------------
 
@@ -102,7 +104,8 @@ def create_character():
             charisma=form.charisma.data,
             luck=luck,
             total_skill=total_skill,
-            dev_mode=form.dev_mode.data
+            dev_mode=form.dev_mode.data,
+            max_hp=50
         )
         db.session.add(new_character)
         db.session.commit()
@@ -117,6 +120,15 @@ def view_character(char_id):
     if character.user_id != current_user.id:
         return "Unauthorized", 403
     return render_template('view_character.html', character=character)
+
+
+@app.route('/play_game/<int:char_id>', methods=['GET', 'POST'])
+@login_required
+def play_game(char_id):
+    character = Character.query.get(char_id)
+    if not character:
+        return "Character not found", 404
+    return render_template('play_game.html', character=character)
 
 @app.route('/dashboard')
 @login_required
