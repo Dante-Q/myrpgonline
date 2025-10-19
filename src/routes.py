@@ -106,7 +106,7 @@ def attack(char_id):
         return jsonify({'message': 'No monster to attack!'}), 400
 
     # -------- Player attack --------
-    player_damage = random.randint(1, 5) + character.strength
+    player_damage = random.randint(1, 5) + (character.strength // 2)
     monster.current_hp -= player_damage
     log_messages.append(f"{character.name} attacks {monster.name} for {player_damage} damage!")
 
@@ -214,15 +214,34 @@ def explore(char_id):
     if existing_monster:
         return jsonify({'message': f"You are already facing a {existing_monster.name}!"})
 
-    chance = random.random()
-    if chance < 0.1:
-        log_messages.append(f"{character.name} discovers a hidden shop!")
+    chance = random.random() # 0 - 1 game explore events below
+    if chance < 0.06:
+        upgrade_type = random.random()
+        if upgrade_type < 0.5:
+            log_messages.append(f"{character.name} discovers a health upgrade!")
+            character.max_hp += 5
+            character.hp += 5  
+            db.session.commit()
+        else:
+            log_messages.append(f"{character.name} discovers a sword upgrade!")
+            character.strength += 1
+            db.session.commit()
         return jsonify({
             'message': ' '.join(log_messages),
-            'outcome': 'shop',
-            'gold': character.gold
+            'player_strength': character.strength,
+            'player_hp': character.hp,
+            'player_max_hp': character.max_hp
         })
-    elif chance < 0.5:
+    elif chance < 0.1:
+        hp_lost = random.randint(1, 10)
+        character.hp = max(0, character.hp - hp_lost)
+        db.session.commit()
+        log_messages.append(f"{character.name} stumbles into a trap and loses {hp_lost} HP!")
+        return jsonify({
+            'message': ' '.join(log_messages),
+            'player_hp': character.hp
+        })
+    elif chance < 0.55:
         monster_template = get_random_monster()
         monster = Monster(
             name=monster_template['name'],
@@ -234,7 +253,7 @@ def explore(char_id):
         )
         db.session.add(monster)
         db.session.commit()
-        log_messages.append(f"{character.name} encounters a {monster.name}!")
+        log_messages.append(f"\n{character.name} encounters a {monster.name}!\n")
         return jsonify({
             'message': ' '.join(log_messages),
             'monster_name': monster.name,
@@ -242,8 +261,14 @@ def explore(char_id):
             'monster_max_hp': monster.max_hp,
             'gold': character.gold
         })
+    elif chance < 0.65:
+        db.session.commit()
+        log_messages.append(f"{character.name} navigates through a quiet area and finds nothing of interest.")
+        return jsonify({
+            'message': ' '.join(log_messages)
+        })
     else:
-        gold_found = random.randint(5, 20)
+        gold_found = random.randint(5, 15)
         character.gold += gold_found
         db.session.commit()
         log_messages.append(f"{character.name} explores and finds {gold_found} gold!")
