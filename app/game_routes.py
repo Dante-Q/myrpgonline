@@ -59,7 +59,6 @@ def buy_item(char_id, item_id):
         character.strength += item["strength_bonus"]
     if "hp_bonus" in item:
         character.max_hp += item["hp_bonus"]
-        character.hp += item["hp_bonus"]  # also heal by bonus
     
     db.session.commit()
 
@@ -113,7 +112,7 @@ def attack(char_id):
     # Check if monster is dead
     if monster.current_hp <= 0:
         character.gold += monster.gold_reward
-        log_messages.append(f"{monster.name} is defeated! {character.name} gains {monster.gold_reward} gold!")
+        log_messages.append(f"<br>{monster.name} is defeated! <br>{character.name} gains {monster.gold_reward} gold!")
         db.session.delete(monster)
         db.session.commit()
         return jsonify({
@@ -125,22 +124,37 @@ def attack(char_id):
         })
 
     # -------- Monster attacks --------
-    monster_damage = monster.attack
+    if monster.name == "Alien Spacecraft":
+        monster_damage = random.randint(30, 80)  # fluctuate each attack
+    else:
+        monster_damage = max(0, monster.attack + random.randint(-2, 4))
+
     character.hp -= monster_damage
-    log_messages.append(f"{monster.name} attacks {character.name} for {monster_damage} damage!")
+    log_messages.append(f"<br>{monster.name} attacks {character.name} for {monster_damage} damage!")
 
     # Check if player is dead
     if character.hp <= 0:
         lost_gold = character.gold
+
+        # Reduce max stats by 1/3 but not below minimum thresholds
+        character.max_hp = max(50, character.max_hp - character.max_hp // 3)
+        character.strength = max(10, character.strength - character.strength // 3)
         character.hp = character.max_hp
         character.gold = 0
-        log_messages.append(f"{character.name} has been defeated and loses all {lost_gold} gold!")
+
+        log_messages.append(
+            f"<br><strong>{character.name} has been defeated, loses {lost_gold} gold.</strong><br>"
+            f"<strong>{character.name} awakens feeling weaker...</strong>"
+        )
         db.session.delete(monster)
         db.session.commit()
+
         return jsonify({
             'message': ' '.join(log_messages),
             'gold': character.gold,
             'player_hp': character.hp,
+            'player_max_hp': character.max_hp,
+            'player_strength': character.strength,
             'monster_hp': 0,
             'monster_name': ''
         })
@@ -180,23 +194,46 @@ def run_away(char_id):
             'monster_name': ''
         })
     else:
-        monster_damage = monster.attack
+        if monster.name == "Alien Spacecraft":
+            monster_damage = random.randint(20, 40)  # fluctuate each attack
+        else:
+            monster_damage = max(0, monster.attack + random.randint(-2, 4))
         character.hp -= monster_damage
         log_messages.append(f"{character.name} failed to run! {monster.name} attacks for {monster_damage} damage!")
         if character.hp <= 0:
             lost_gold = character.gold
+
+            # Reduce max stats by 1/3 but not below minimum thresholds
+            character.max_hp = max(50, character.max_hp - character.max_hp // 3)
+            character.strength = max(10, character.strength - character.strength // 3)
             character.hp = character.max_hp
             character.gold = 0
-            log_messages.append(f"{character.name} has been defeated and loses all {lost_gold} gold!")
+
+            log_messages.append(
+                f"<br><strong>{character.name} has been defeated, loses {lost_gold} gold.</strong><br>"
+                f"<strong>{character.name} awakens feeling weaker...</strong>"
+            )
             db.session.delete(monster)
+            db.session.commit()
+
+            return jsonify({
+                'message': ' '.join(log_messages),
+                'gold': character.gold,
+                'player_hp': character.hp,
+                'player_max_hp': character.max_hp,
+                'player_strength': character.strength,
+                'monster_hp': 0,
+                'monster_name': ''
+            })
         db.session.commit()
         return jsonify({
             'message': ' '.join(log_messages),
             'gold': character.gold,
             'player_hp': character.hp,
-            'monster_hp': monster.current_hp if character.hp > 0 else 0,
-            'monster_name': monster.name if character.hp > 0 else ''
+            'monster_hp': monster.current_hp,
+            'monster_name': monster.name
         })
+
 
 
 # ------------------ Explore ------------------
@@ -215,7 +252,7 @@ def explore(char_id):
         return jsonify({'message': f"You are already facing a {existing_monster.name}!"})
 
     chance = random.random() # 0 - 1 game explore events below
-    if chance < 0.06:
+    if chance < 0.05:
         upgrade_type = random.random()
         if upgrade_type < 0.5:
             log_messages.append(f"{character.name} discovers a health upgrade!")
@@ -261,14 +298,14 @@ def explore(char_id):
             'monster_max_hp': monster.max_hp,
             'gold': character.gold
         })
-    elif chance < 0.65:
+    elif chance < 0.7:
         db.session.commit()
         log_messages.append(f"{character.name} navigates through a quiet area and finds nothing of interest.")
         return jsonify({
             'message': ' '.join(log_messages)
         })
     else:
-        gold_found = random.randint(5, 15)
+        gold_found = random.randint(5, 12)
         character.gold += gold_found
         db.session.commit()
         log_messages.append(f"{character.name} explores and finds {gold_found} gold!")

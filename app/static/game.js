@@ -5,7 +5,7 @@ const charId = document.body.dataset.charId;
 function logMessage(msg) {
     const log = document.getElementById('log');
     const p = document.createElement('p');
-    p.textContent = msg;
+    p.innerHTML = msg;
     log.appendChild(p);
     log.scrollTop = log.scrollHeight;
 }
@@ -46,7 +46,6 @@ function updateMonsterUI(monsterData) {
         const monsterDiv = document.getElementById('monster');
     const monsterInfo = document.querySelector('#monster_info span');
 
-    // Always keep the monster div visible
     monsterDiv.style.display = 'block';
 
     if (monsterData && monsterData.monster_name) {
