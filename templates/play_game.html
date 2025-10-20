@@ -19,7 +19,7 @@
     <div class="scroll-container">
             
         <div class="container" style="height: 700px;margin: 20px;">
-            <h1>⚔️ Adventure with {{ character.name }}</h1>
+            <h1>⚔️ Adventure with <span class="highlight">{{ character.name }}</span></h1>
             
             <!-- Player Stats -->
             <div class="characters-section" style="padding: 10px;">
@@ -41,12 +41,12 @@
         <div class="container" style="height: 700px;justify-content: center; margin: 20px;">  
             <!-- Monster Stats (Initially hidden) -->
             <div id="monster" class="characters-section">
-                <h2><span class="highlight">My RPG</span> Game</h2>
+                <h2><span class="highlight" style="margin: 10px;">My RPG</span> Game</h2>
                 <ul class="character-list" style="padding: 10px; pointer-events: none;" >
-                    <li><strong>{{ character.name }} HP:</strong> <span class="player_hp">{{ character.hp }}</span> / <span class="player_max_hp">{{ character.max_hp }}</span></li>
+                    <li><strong>{{ character.name }} HP:</strong> <span class="player_hp">{{ character.hp }}</span>&nbsp;/&nbsp;<span class="player_max_hp">{{ character.max_hp }}</span></li>
                     <li id="monster_info" style="height: 2.2em;">
                     <span>
-                        <strong id="monster_name_placeholder">&nbsp;</strong> HP: <span id="monster_hp">0</span> / <span id="monster_max_hp">0</span>
+                        <strong id="monster_name_placeholder">&nbsp;</strong> HP: <span id="monster_hp">0</span>&nbsp;/&nbsp;<span id="monster_max_hp">0</span>
                     </span>
                     </li>
                 </ul>
