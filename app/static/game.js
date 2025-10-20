@@ -43,20 +43,26 @@ function updateButtons(monster) {
 }
 
 function updateMonsterUI(monsterData) {
-    const monsterDiv = document.getElementById('monster');
+        const monsterDiv = document.getElementById('monster');
+    const monsterInfo = document.querySelector('#monster_info span');
+
+    // Always keep the monster div visible
+    monsterDiv.style.display = 'block';
+
     if (monsterData && monsterData.monster_name) {
-        monsterDiv.style.display = 'block';
+        monsterInfo.style.display = 'inline';
         document.getElementById('monster_name_placeholder').textContent = monsterData.monster_name;
         document.getElementById('monster_hp').textContent = monsterData.monster_hp;
         if (monsterData.monster_max_hp !== undefined) {
             document.getElementById('monster_max_hp').textContent = monsterData.monster_max_hp;
         }
     } else {
-        monsterDiv.style.display = 'none';
+        monsterInfo.style.display = 'none';
         document.getElementById('monster_name_placeholder').textContent = '';
         document.getElementById('monster_hp').textContent = '0';
         document.getElementById('monster_max_hp').textContent = '0';
     }
+
     updateButtons(monsterData && monsterData.monster_name ? { hp: monsterData.monster_hp } : null);
 }
 
@@ -77,6 +83,7 @@ function performAction(action) {
             if (data.message) logMessage(data.message);
 
             if (data.player_hp !== undefined) document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
+            if (data.player_max_hp !== undefined) document.querySelectorAll('.player_max_hp').forEach(el => el.textContent = data.player_max_hp);
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
             if (data.player_strength !== undefined) document.querySelectorAll('.player_strength').forEach(el => el.textContent = data.player_strength);
 
@@ -98,7 +105,7 @@ function loadShop() {
             data.items.forEach(item => {
                 const li = document.createElement('li');
                 li.textContent = `${item.name} - ${item.cost} gold`;
-                li.dataset.itemName = item.name; // add this for click handler
+                li.dataset.itemId = item.id;
                 shopList.appendChild(li);
             });
         })
@@ -107,9 +114,9 @@ function loadShop() {
 
 // Event delegation to buy items when clicked
 document.getElementById('shop_items').addEventListener('click', (event) => {
-    const li = event.target;
-    if (li.dataset.itemName) {
-        buyItem(li.dataset.itemName);
+    const li = event.target.closest('li');
+    if (li && li.dataset.itemId) {
+        buyItem(li.dataset.itemId);
     }
 });
 
@@ -120,22 +127,19 @@ function buyItem(itemId) {
             logMessage(data.message);
             if (data.gold !== undefined) document.getElementById('gold').textContent = data.gold;
             if (data.player_hp !== undefined) document.querySelectorAll('.player_hp').forEach(el => el.textContent = data.player_hp);
+            if (data.player_max_hp !== undefined) document.querySelectorAll('.player_max_hp').forEach(el => el.textContent = data.player_max_hp);
             if (data.player_strength !== undefined) document.querySelectorAll('.player_strength').forEach(el => el.textContent = data.player_strength);
-        });
+            loadShop();
+        })
+        .catch(err => console.error("Error buying item:", err));
 }
-
-// Load shop on page load
-document.addEventListener('DOMContentLoaded', () => {
-    loadShop();
-});
-
 
 // -------------------- Initialize --------------------
 document.addEventListener('DOMContentLoaded', () => {
     fetch(`/current_monster/${charId}`)
         .then(res => res.json())
-        .then(data => {
-            updateMonsterUI(data.monster_name ? data : null);
-        })
+        .then(data => updateMonsterUI(data.monster_name ? data : null))
         .catch(err => console.error('Error fetching current monster:', err));
+
+    loadShop();
 });

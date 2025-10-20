@@ -37,10 +37,28 @@ body {
     margin: 10px;
 }
 
+.scroll-tabs {
+    display: none;
+}
+
+.scroll-wrapper {
+    overflow-x: hidden; /* hide horizontal scrollbar */
+}
+.scroll-container {
+    display: flex;
+    transition: transform 0.3s ease;
+    flex-wrap: nowrap;
+}
+
+/* Each section takes full width of mobile viewport */
+.scroll-container .section {
+    min-width: 100%;
+}
+
 /* Center container */
 .container {
     text-align: center;
-    max-height: 90vh;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -48,12 +66,74 @@ body {
     padding: 40px 60px;
     border-radius: 20px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    width: 90%;
+    width: 500px;
     text-align: center;
 
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+
+    .container {
+        padding: 20px, 30px;
+        margin-top: 60px;
+    }
+
+    body {
+        padding-top: 65px; 
+    }
+
+    .header-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 65px;
+        z-index: 1000;
+        justify-content: center;
+        flex-wrap: wrap; /* optional: wraps buttons to new line if needed */
+        text-align: center;
+        background: radial-gradient(circle at top, #403d53, #322f42);
+    }
+
+    /* Horizontal Scroll Sections */
+    .scroll-wrapper {
+        overflow-x: auto;        
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        background-color: #1a1824;
+    }
+
+    .scroll-container {
+        display: flex;
+        width: 200%;   
+        background-color: #1a1824;         
+    }
+
+    .game-section {
+        min-width: 100%;        
+        scroll-snap-align: start;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    .scroll-tabs {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+    }
+
+    .scroll-tabs button {
+        padding: 5px 10px;
+        border-radius: 5px;
+        background: #555;
+        color: #fff;
+    }
+
 }
 
 /* Headers */
@@ -85,9 +165,6 @@ p {
     gap: 20px;
 }
 
-/* Character Creation Form */
-
-
 /* Character Section */
 .characters-section {
     display: flex;
@@ -101,6 +178,7 @@ p {
     list-style: none;
     width: 100%;
     max-width: 400px; /* optional: limit list width */
+    min-width: 260px;
     display: flex;
     flex-direction: column;
     gap: 10px;
