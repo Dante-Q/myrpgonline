@@ -62,7 +62,7 @@ This installs all packages from `requirements.txt` into the virtual environment,
 ### 7. Launch the project
 
 ```bash
-python src/app.py
+python src/run.py
 ```
 
 Then open your browser, create an account on localhost, and log in.
